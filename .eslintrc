@@ -1,0 +1,61 @@
+{
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "sourceType": "module",
+    "allowImportExportEverywhere": true
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "jquery": false
+  },
+  "rules": {
+    "indent": [
+      "warn",
+      4
+    ],
+    "max-len": [
+      "warn",
+      {
+        "code": 150
+      }
+    ],
+    "react/jsx-indent": [
+      "warn",
+      4
+    ],
+    "arrow-parens": [
+      "off"
+    ],
+    "quotes": [
+      "error",
+      "single"
+    ],
+    "compat/compat": "off",
+    "consistent-return": "off",
+    "comma-dangle": "off",
+    "generator-star-spacing": "off",
+    "import/no-unresolved": "error",
+    "import/no-extraneous-dependencies": "off",
+    "no-console": "off",
+    "no-use-before-define": "off",
+    "no-multi-assign": "off",
+    "prefer-template": "off",
+    "no-shadow": "off",
+    "linebreak-style": 0,
+    "array-bracket-spacing": "off",
+    "function-paren-newline": "off",
+    "camelcase": "off",
+    "no-nested-ternary": "off",
+    "object-curly-newline": [
+      "off"
+    ]
+  },
+  "globals": {
+    "__DEV__": true
+  },
+  "plugins": [],
+  "settings": {
+    "polyfills": []
+  }
+}
