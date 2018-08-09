@@ -46,11 +46,11 @@ shape(arr).filterByProp('id', 'abc').fetchIndex(0);
 
 `Function`. Returns the shaped collection.
 
-### fetchIndex
+### fetchIndex(index)
 
 `Function`. Returns item at a specific index from the shaped collection.
 
-### filterByUnique
+### filterByUnique(key, value)
 
 `Function`. Filters the collection by unique value:
 
@@ -71,7 +71,7 @@ const user = shape(arr).filterByUnique('id', 1).fetchIndex(0);
 // {id: 1, users: ['aa', 'bb']}
 ```
 
-### filterByDuplicate
+### filterByDuplicate(key, length = 2)
 
 `Function`. Filter and extract duplicate items from collection:
 
@@ -96,7 +96,7 @@ const duplicates = shape(arr).filterByDuplicate('id').fetch();
 // [{ id: 1, type: 'b' ... }, { id: 1, type: 'a' ... }]
 ```
 
-### filterByProp
+### filterByProp(key, value)
 
 `Function`. Filter collection by property value:
 
@@ -121,7 +121,7 @@ const item = shape(arr).filterByProp('id', 3).fetch();
 // [{ id: 3, type: 'a' ... }]
 ```
 
-### sortBy
+### sortBy({ key, type, direction })
 
 `Function`. Sort collection by key, type and direction:
 
@@ -162,7 +162,7 @@ Available options for `sortBy` are:
     - `asc`
     - `desc`
 
-### reduceTo
+### reduceTo(key)
 
 `Function`. Reduce collection to another collection:
 
