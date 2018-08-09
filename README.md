@@ -1,7 +1,7 @@
 <!-- Name -->
-<a href="https://github.com/nevendyulgerov/get-image-orientation">
+<a href="https://github.com/nevendyulgerov/shape-collection">
     <h1>
-        Get Image Orientation
+        Shape Collection
     </h1>
 </a>
 
