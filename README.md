@@ -41,6 +41,7 @@ shape(arr).filterByProp('id', 'abc').fetchIndex(0);
 - **items** - array (of objects), **REQUIRED**
 
 ## API
+All methods available under the `shape` API morph data into arrays. To retrieve the morphed array, call `fetch()` at the end of your sequence. Then, you can take full advantage of `array-extras` methods like `map`, `sort` and `filter`.
 
 ### fetch
 
