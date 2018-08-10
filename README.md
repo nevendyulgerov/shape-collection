@@ -41,15 +41,15 @@ shape(arr).filterByProp('id', 'abc').fetchIndex(0);
 - **items** - array (of objects), **REQUIRED**
 
 ## API
-All methods available under the `shape` API morph data into arrays. To retrieve the morphed array, call `fetch()` at the end of your sequence. Then, you can take full advantage of `array-extras` methods like `map`, `sort` and `filter`.
+All methods available under the `shape` API, morph data into arrays. To retrieve the morphed array, call `fetch()` at the end of your sequence. Then, you can take full advantage of `array-extras` methods like `map`, `sort` and `filter`. All methods, which accept `key` as property, support nested key look-ups like `user.details.createdAt`. This works for nested object properties only.
 
 ### fetch
 
-`Function`. Returns the shaped collection.
+`Function`. Returns the morphed collection.
 
 ### fetchIndex(index)
 
-`Function`. Returns item at a specific index from the shaped collection.
+`Function`. Returns item at a specific index from the morphed collection.
 
 ### filterByUnique(key, value)
 
