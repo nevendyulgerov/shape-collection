@@ -313,7 +313,7 @@ const examsSortedByScore = shape(groups)
 ]
 */
 
-// getting nested props from object fields
+// getting nested props from object fields, using comma-separated keys
 const summerBreaks = shape(groups).reduceTo('events.summerBreak').fetch();
 
 // summerBreaks contains
