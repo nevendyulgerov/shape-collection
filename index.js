@@ -228,7 +228,7 @@ export const shape = items => {
             shapeItems = shapeItems.filter(item => extractNestedProp(item, key) === value);
             return this;
         },
-        sortBy({ key, type = 'string', direction = 'asc' }) {
+        sortBy(key, type = 'string', direction = 'asc') {
             shapeItems = sortBy(shapeItems, key, type, direction);
             return this;
         },
@@ -240,10 +240,9 @@ export const shape = items => {
                 } else if (!isUndef(prop) && !isNull(prop)) {
                     return [...accumulator, prop];
                 }
+                return accumulator;
             }, []);
             return this;
         }
     };
 };
-
-window['shape'] = shape;
