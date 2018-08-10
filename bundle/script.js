@@ -340,12 +340,9 @@ var shape = exports.shape = function shape(items) {
             });
             return this;
         },
-        sortBy: function sortBy(_ref) {
-            var key = _ref.key,
-                _ref$type = _ref.type,
-                type = _ref$type === undefined ? 'string' : _ref$type,
-                _ref$direction = _ref.direction,
-                direction = _ref$direction === undefined ? 'asc' : _ref$direction;
+        sortBy: function sortBy(key) {
+            var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'string';
+            var direction = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'asc';
 
             shapeItems = _sortBy(shapeItems, key, type, direction);
             return this;
@@ -358,13 +355,12 @@ var shape = exports.shape = function shape(items) {
                 } else if (!isUndef(prop) && !isNull(prop)) {
                     return [].concat(_toConsumableArray(accumulator), [prop]);
                 }
+                return accumulator;
             }, []);
             return this;
         }
     };
 };
-
-window['shape'] = shape;
 
 /***/ })
 /******/ ]);
