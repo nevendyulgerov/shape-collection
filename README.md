@@ -239,7 +239,7 @@ The following params are passed to `augmenter`:
 - key - key passed to the `reduceTo` function
 
 ## extractNestedProp
-A helper utility method for retrieval of object properties at any level.
+A helper utility method for retrieving object properties at any level.
 
 ```javascript
 import { extractNestedProp } from 'shape-collection';
