@@ -74,7 +74,7 @@ const isUndef = val => typeof val === 'undefined';
  * @param key
  * @returns {*}
  */
-export const extractNestedProp = (obj, key) => {
+const extractNestedProp = (obj, key) => {
     const keys = key.split('.');
     const keysLength = keys.length - 1;
     let keysIndex = 0;
@@ -215,7 +215,7 @@ const filterByDuplicate = (items, key, duplicateLength = 2) => items.filter(item
  * @param {array} items
  * @returns {*}
  */
-export const shape = items => {
+const shape = items => {
     let shapeItems = [...items];
 
     return {
@@ -272,3 +272,5 @@ export const shape = items => {
         }
     };
 };
+
+module.exports = { shape, extractNestedProp };
