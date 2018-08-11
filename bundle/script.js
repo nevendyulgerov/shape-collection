@@ -77,10 +77,6 @@ module.exports = __webpack_require__(1);
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -175,7 +171,7 @@ var isUndef = function isUndef(val) {
  * @param key
  * @returns {*}
  */
-var extractNestedProp = exports.extractNestedProp = function extractNestedProp(obj, key) {
+var extractNestedProp = function extractNestedProp(obj, key) {
     var keys = key.split('.');
     var keysLength = keys.length - 1;
     var keysIndex = 0;
@@ -323,7 +319,7 @@ var _filterByDuplicate = function _filterByDuplicate(items, key) {
  * @param {array} items
  * @returns {*}
  */
-var shape = exports.shape = function shape(items) {
+var shape = function shape(items) {
     var shapeItems = [].concat(_toConsumableArray(items));
 
     return {
@@ -389,6 +385,8 @@ var shape = exports.shape = function shape(items) {
         }
     };
 };
+
+module.exports = { shape: shape, extractNestedProp: extractNestedProp };
 
 /***/ })
 /******/ ]);
