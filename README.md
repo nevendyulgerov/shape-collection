@@ -40,7 +40,7 @@ shape(arr).filterByProp('id', 'abc').fetchIndex(0);
 
 - **items** - array (of objects), **REQUIRED**
 
-## API
+## Shape API
 All methods available under the `shape` API, morph data into arrays. To retrieve the morphed array, call `fetch()` at the end of your sequence. Then, you can take full advantage of `array-extras` methods like `map`, `sort` and `filter`. All methods, which accept `key` as property, support nested key look-ups like `user.details.createdAt`. This works for nested object properties only.
 
 ### fetch
@@ -51,9 +51,9 @@ All methods available under the `shape` API, morph data into arrays. To retrieve
 
 `Function`. Returns item at a specific index from the morphed collection.
 
-### filterByUnique(key, value)
+### filterByUnique(key)
 
-`Function`. Filters the collection by unique value:
+`Function`. Filters the collection by unique values for given key:
 
 ```javascript
 import { shape } from 'shape-collection';
@@ -64,17 +64,25 @@ const arr = [{
 }, {
   id: 2,
   users: ['kk', 'zz', 'xyz']
+}, {
+  id: 1,
+  users: ['aa', 'bb']
+}, {
+  id: 2,
+  users: ['kk', 'zz', 'xyz']
 }];
 
-const user = shape(arr).filterByUnique('id', 1).fetchIndex(0);
+const uniqueItems = shape(arr).filterByUnique('id').fetch();
 
-// user contains:
-// {id: 1, users: ['aa', 'bb']}
+// uniqueItems contains:
+// [{ id: 1, users: ['aa', 'bb'] }, { id: 2, users: ['kk', 'zz', 'xyz'] }]
 ```
 
-### filterByDuplicate(key, length = 2)
+This function filters by first found unique value. All subsequent identical values are ignored.
 
-`Function`. Filter and extract duplicate items from collection:
+### filterByDuplicate(key)
+
+`Function`. Filter the collection by duplicate values for given key:
 
 ```javascript
 const arr = [{
@@ -85,7 +93,7 @@ const arr = [{
   id: 1,
   type: 'a',
   users: ['kk', 'zz', 'xyz']
-}, , {
+}, {
   id: 3,
   type: 'a',
   users: ['kk', 'zz', 'xyz']
@@ -99,7 +107,7 @@ const duplicates = shape(arr).filterByDuplicate('id').fetch();
 
 ### filterByProp(key, value)
 
-`Function`. Filter collection by property value:
+`Function`. Filter collection by key-value pair comparison:
 
 ```javascript
 const arr = [{
@@ -110,7 +118,7 @@ const arr = [{
   id: 1,
   type: 'a',
   users: ['kk', 'zz', 'xyz']
-}, , {
+}, {
   id: 3,
   type: 'a',
   users: ['kk', 'zz', 'xyz']
@@ -135,7 +143,7 @@ const arr = [{
   id: 1,
   type: 'a',
   users: ['kk', 'zz', 'xyz']
-}, , {
+}, {
   id: 3,
   type: 'a',
   users: ['kk', 'zz', 'xyz']
@@ -163,7 +171,7 @@ Available options for `sortBy` are:
     - `asc`
     - `desc`
 
-### reduceTo(key)
+### reduceTo(key, augmenter = (item, prop, key) => {})
 
 `Function`. Reduce collection to another collection:
 
@@ -187,6 +195,83 @@ const users = shape(arr).reduceTo('users').fetch();
 // users contains:
 // ["aa", "bb", "kk", "zz", "xyz", "ff", "hhh", "eeee", "kk"]
 ```
+
+You can also pass an `augmenter` function to `reduceTo` as a second argument. An augmenter is a special function, invoked only when you are reducing arrays of objects to another array of objects. It can be useful, when you want to extract a nested array of objects but also want to keep track of their parent objects after they have been reduced. Here's an example:
+
+```javascript
+const users = [{
+    id: 1,
+    type: 'day_group',
+    grades: {
+        english: 4,
+        driving: 7
+    }
+}, {
+    id: 2,
+    type: 'evening_group',
+    grades: {
+        english: 6,
+        driving: 10
+    }
+}, {
+    id: 3,
+    type: 'weekend_group',
+    grades: []
+}];
+
+const gradesWithUserId = shape(users)
+    .reduceTo('grades', (prop, item) => ({ id: item.id }))
+    .fetch();
+
+// gradesWithUserId contains
+/*
+[
+    { english: 4, driving: 7, id: 1 },
+    { english: 6, driving: 10, id: 2 }
+]
+```
+
+The `augmenter` method returns an object, which is then merged into the respective reduced item. With an augmenter you can add identifiers to your morphed collections.
+
+The following params are passed to `augmenter`:
+- item - the parent item
+- prop - the currently reduced-to item
+- key - key passed to the `reduceTo` function
+
+## extractNestedProp
+A helper utility method for retrieval of object properties at any level.
+
+```javascript
+import { extractNestedProp } from 'shape-collection';
+
+const users = [{
+    id: 1,
+    type: 'day_group',
+    grades: {
+        english: 4,
+        driving: 7
+    }
+}, {
+    id: 2,
+    type: 'evening_group',
+    grades: {
+        english: 6,
+        driving: 10
+    }
+}, {
+    id: 3,
+    type: 'weekend_group',
+    grades: []
+}];
+
+const [ firstUser ] = users;
+const englishGrade = extractNestedProp(firstUser, 'grades.english');
+
+// englishGrade contains
+// 4
+```
+
+`extractNestedProp` works on any level as long as the prop at the requested key is an object. For multiple keys like `grades.english` this means that grades must be an object. This methods returns `undefined` if no such key exists in the target object.
 
 ## Examples
 
@@ -322,6 +407,63 @@ const summerBreaks = shape(groups).reduceTo('events.summerBreak').fetch();
 [
     {startDate: "22/06/2018", endDate: "22/09/2018"},
     {startDate: "12/06/2018", endDate: "12/09/2018"}
+]
+*/
+
+const nestedItems = [{
+    id: 1,
+    type: 'a',
+    items: [{
+        id: 11,
+        type: 'aa',
+        items: [{
+            id: 111,
+            type: 'aaa',
+            items: [{
+                id: 1111,
+                type: 'aaaa'
+            }]
+        }]
+    }]
+}, {
+    id: 2,
+    type: 'b',
+    items: [{
+        id: 22,
+        type: 'bb',
+        items: [{
+            id: 222,
+            type: 'bbb',
+            items: [{
+                id: 2222,
+                type: 'bbbb'
+            }]
+        }]
+    }]
+}, {
+    id: 3,
+    type: 'c',
+    items: [{
+        id: 33,
+        type: 'cc',
+        items: [{
+            id: 333,
+            type: 'ccc'
+        }]
+    }]
+}];
+
+const nestedItems = shape(nestedItems)
+    .reduceTo('items')
+    .reduceTo('items')
+    .reduceTo('items')
+    .fetch();
+
+// nestedItems contains:
+/*
+[
+    {id: 1111, type: "aaaa"},
+    {id: 2222, type: "bbbb"}
 ]
 */
 ```
