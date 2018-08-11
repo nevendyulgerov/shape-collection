@@ -1,6 +1,6 @@
 {
   "name": "shape-collection",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Utility for manipulating data in arrays of objects",
   "main": "input.js",
   "scripts": {
