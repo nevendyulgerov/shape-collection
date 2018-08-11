@@ -116,6 +116,15 @@ var extend = function extend() {
 };
 
 /**
+ * @description Is function
+ * @param val
+ * @returns {boolean}
+ */
+var isFunc = function isFunc(val) {
+    return typeof val === 'function';
+};
+
+/**
  * @description Check if value is of type 'object'
  * @param val
  * @returns {boolean}
@@ -163,11 +172,11 @@ var isUndef = function isUndef(val) {
 /**
  * @description Extract nexted prop
  * @param obj
- * @param keysText
+ * @param key
  * @returns {*}
  */
-var extractNestedProp = function extractNestedProp(obj, keysText) {
-    var keys = keysText.split('.');
+var extractNestedProp = exports.extractNestedProp = function extractNestedProp(obj, key) {
+    var keys = key.split('.');
     var keysLength = keys.length - 1;
     var keysIndex = 0;
     var isValidKey = true;
@@ -200,14 +209,14 @@ var extractNestedProp = function extractNestedProp(obj, keysText) {
 /**
  * @description Sort by
  * @param items
- * @param keysText
+ * @param key
  * @param propType
  * @param direction
  */
-var _sortBy = function _sortBy(items, keysText, propType, direction) {
+var _sortBy = function _sortBy(items, key, propType, direction) {
     return items.sort(function (a, b) {
-        var aVal = isStr(keysText) ? extractNestedProp(a, keysText) : '';
-        var bVal = isStr(keysText) ? extractNestedProp(b, keysText) : '';
+        var aVal = isStr(key) ? extractNestedProp(a, key) : '';
+        var bVal = isStr(key) ? extractNestedProp(b, key) : '';
 
         if (isUndef(aVal) || isNull(aVal)) {
             return direction === 'asc' ? -1 : 1;
@@ -236,10 +245,10 @@ var _sortBy = function _sortBy(items, keysText, propType, direction) {
         } else if (propType === 'date') {
             return direction === 'asc' ? new Date(aVal) - new Date(bVal) : new Date(bVal) - new Date(aVal);
         } else if (propType === 'combo') {
-            aVal = keysText.map(function (key) {
+            aVal = key.map(function (key) {
                 return extractNestedProp(a, key);
             }).join(' ');
-            bVal = keysText.map(function (key) {
+            bVal = key.map(function (key) {
                 return extractNestedProp(b, key);
             }).join(' ');
 
@@ -329,8 +338,7 @@ var shape = exports.shape = function shape(items) {
             return this;
         },
         filterByDuplicate: function filterByDuplicate(key) {
-            var length = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2;
-
+            var length = 2;
             shapeItems = _filterByDuplicate(shapeItems, key, length);
             return this;
         },
@@ -347,13 +355,33 @@ var shape = exports.shape = function shape(items) {
             shapeItems = _sortBy(shapeItems, key, type, direction);
             return this;
         },
-        reduceTo: function reduceTo(key) {
+        reduceTo: function reduceTo(key, augmenter) {
+            var hasAugmenter = isFunc(augmenter);
+
             shapeItems = shapeItems.reduce(function (accumulator, item) {
                 var prop = extractNestedProp(item, key);
+                var augmentObj = void 0;
+
+                if (isFunc(augmenter)) {
+                    augmentObj = augmenter(item, prop, key);
+                }
+
                 if (isArr(prop)) {
-                    return [].concat(_toConsumableArray(accumulator), _toConsumableArray(prop));
+                    var nextProp = prop;
+
+                    if (isObj(prop[0]) && hasAugmenter) {
+                        nextProp = prop.map(function (propItem) {
+                            return extend({}, propItem, isObj(augmentObj) ? augmentObj : {});
+                        });
+                    }
+                    return [].concat(_toConsumableArray(accumulator), _toConsumableArray(nextProp));
                 } else if (!isUndef(prop) && !isNull(prop)) {
-                    return [].concat(_toConsumableArray(accumulator), [prop]);
+                    var _nextProp = prop;
+
+                    if (isObj(prop) && hasAugmenter) {
+                        _nextProp = extend({}, prop, isObj(augmentObj) ? augmentObj : {});
+                    }
+                    return [].concat(_toConsumableArray(accumulator), [_nextProp]);
                 }
                 return accumulator;
             }, []);
