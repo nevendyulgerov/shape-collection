@@ -220,7 +220,7 @@ const users = [{
 }];
 
 const gradesWithUserId = shape(users)
-    .reduceTo('grades', item => ({ id: item.id }))
+    .reduceTo('grades', ({ id }) => ({ id }))
     .fetch();
 
 // gradesWithUserId contains
