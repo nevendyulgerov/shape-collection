@@ -196,7 +196,7 @@ const users = shape(arr).reduceTo('users').fetch();
 // ["aa", "bb", "kk", "zz", "xyz", "ff", "hhh", "eeee", "kk"]
 ```
 
-You can also pass an `augmenter` function to `reduceTo` as a second argument. An augmenter is a special function, invoked only when you are reducing arrays of objects to another array of objects. It can be useful, when you want to extract a nested array of objects but also want to keep track of their parent objects after they have been reduced. Here's an example:
+You can also pass an optional `augmenter` function to `reduceTo` as a second argument. An augmenter is a special function, invoked only when you are reducing arrays of objects to another array of objects. It can be useful, when you want to extract a nested array of objects but also want to keep track of their parent objects after they have been reduced. Here's an example:
 
 ```javascript
 const users = [{
