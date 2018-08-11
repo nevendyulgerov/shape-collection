@@ -15,6 +15,9 @@ export const groups = [{
         id: 'abc',
         name: 'John Doe',
         age: 33,
+        calendar: {
+            birthday: '12/12/1986'
+        },
         exams: [{
             name: 'English B1',
             score: 5
@@ -99,4 +102,69 @@ export const users = [{
     id: 3,
     type: 'weekend_group',
     grades: []
+}];
+
+export const advancedUsers = [{
+    id: 1,
+    type: 'day_group',
+    grades: [{
+        english: 4,
+        driving: 7
+    }, {
+        spanish: 5,
+        programming: 6
+    }]
+}, {
+    id: 2,
+    type: 'evening_group',
+    grades: [{
+        english: 6,
+        driving: 10
+    }, {
+        spanish: 10,
+        programming: 10
+    }]
+}];
+
+export const nestedItems = [{
+    id: 1,
+    type: 'a',
+    items: [{
+        id: 11,
+        type: 'aa',
+        items: [{
+            id: 111,
+            type: 'aaa',
+            items: [{
+                id: 1111,
+                type: 'aaaa'
+            }]
+        }]
+    }]
+}, {
+    id: 2,
+    type: 'b',
+    items: [{
+        id: 22,
+        type: 'bb',
+        items: [{
+            id: 222,
+            type: 'bbb',
+            items: [{
+                id: 2222,
+                type: 'bbbb'
+            }]
+        }]
+    }]
+}, {
+    id: 3,
+    type: 'c',
+    items: [{
+        id: 33,
+        type: 'cc',
+        items: [{
+            id: 333,
+            type: 'ccc'
+        }]
+    }]
 }];
