@@ -27,6 +27,13 @@ const extend = function() {
 };
 
 /**
+ * @description Is function
+ * @param val
+ * @returns {boolean}
+ */
+const isFunc = val => typeof val === 'function';
+
+/**
  * @description Check if value is of type 'object'
  * @param val
  * @returns {boolean}
@@ -64,11 +71,11 @@ const isUndef = val => typeof val === 'undefined';
 /**
  * @description Extract nexted prop
  * @param obj
- * @param keysText
+ * @param key
  * @returns {*}
  */
-const extractNestedProp = (obj, keysText) => {
-    const keys = keysText.split('.');
+export const extractNestedProp = (obj, key) => {
+    const keys = key.split('.');
     const keysLength = keys.length - 1;
     let keysIndex = 0;
     let isValidKey = true;
@@ -101,14 +108,14 @@ const extractNestedProp = (obj, keysText) => {
 /**
  * @description Sort by
  * @param items
- * @param keysText
+ * @param key
  * @param propType
  * @param direction
  */
-const sortBy = (items, keysText, propType, direction) => {
+const sortBy = (items, key, propType, direction) => {
     return items.sort((a, b) => {
-        let aVal = isStr(keysText) ? extractNestedProp(a, keysText) : '';
-        let bVal = isStr(keysText) ? extractNestedProp(b, keysText) : '';
+        let aVal = isStr(key) ? extractNestedProp(a, key) : '';
+        let bVal = isStr(key) ? extractNestedProp(b, key) : '';
 
         if (isUndef(aVal) || isNull(aVal)) {
             return direction === 'asc' ? -1 : 1;
@@ -139,8 +146,8 @@ const sortBy = (items, keysText, propType, direction) => {
                 ? new Date(aVal) - new Date(bVal)
                 : new Date(bVal) - new Date(aVal);
         } else if (propType === 'combo') {
-            aVal = keysText.map(key => extractNestedProp(a, key)).join(' ');
-            bVal = keysText.map(key => extractNestedProp(b, key)).join(' ');
+            aVal = key.map(key => extractNestedProp(a, key)).join(' ');
+            bVal = key.map(key => extractNestedProp(b, key)).join(' ');
 
             if (isUndef(aVal) || isNull(aVal)) {
                 return direction === 'asc' ? -1 : 1;
@@ -220,7 +227,8 @@ export const shape = items => {
             shapeItems = filterByUnique(shapeItems, key);
             return this;
         },
-        filterByDuplicate(key, length = 2) {
+        filterByDuplicate(key) {
+            const length = 2;
             shapeItems = filterByDuplicate(shapeItems, key, length);
             return this;
         },
@@ -232,13 +240,31 @@ export const shape = items => {
             shapeItems = sortBy(shapeItems, key, type, direction);
             return this;
         },
-        reduceTo(key) {
+        reduceTo(key, augmenter) {
+            const hasAugmenter = isFunc(augmenter);
+
             shapeItems = shapeItems.reduce((accumulator, item) => {
                 const prop = extractNestedProp(item, key);
+                let augmentObj;
+
+                if (isFunc(augmenter)) {
+                    augmentObj = augmenter(item, prop, key);
+                }
+
                 if (isArr(prop)) {
-                    return [...accumulator, ...prop];
+                    let nextProp = prop;
+
+                    if (isObj(prop[0]) && hasAugmenter) {
+                        nextProp = prop.map(propItem => extend({}, propItem, isObj(augmentObj) ? augmentObj : {}))
+                    }
+                    return [...accumulator, ...nextProp];
                 } else if (!isUndef(prop) && !isNull(prop)) {
-                    return [...accumulator, prop];
+                    let nextProp = prop;
+
+                    if (isObj(prop) && hasAugmenter) {
+                        nextProp = extend({}, prop, isObj(augmentObj) ? augmentObj : {});
+                    }
+                    return [...accumulator, nextProp];
                 }
                 return accumulator;
             }, []);
