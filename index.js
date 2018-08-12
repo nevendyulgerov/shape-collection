@@ -273,4 +273,4 @@ const shape = items => {
     };
 };
 
-module.exports = { shape, extractNestedProp };
+module.exports = { shape };
