@@ -386,7 +386,7 @@ var shape = function shape(items) {
     };
 };
 
-module.exports = { shape: shape, extractNestedProp: extractNestedProp };
+module.exports = { shape: shape };
 
 /***/ })
 /******/ ]);
