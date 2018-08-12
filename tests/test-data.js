@@ -86,22 +86,22 @@ export const groups = [{
 
 export const users = [{
     id: 1,
-    type: 'day_group',
+    name: 'User A',
     grades: {
         english: 4,
         driving: 7
     }
 }, {
     id: 2,
-    type: 'evening_group',
+    name: 'User B',
     grades: {
         english: 6,
         driving: 10
     }
 }, {
     id: 3,
-    type: 'weekend_group',
-    grades: []
+    name: 'User C',
+    grades: {}
 }];
 
 export const advancedUsers = [{
