@@ -149,25 +149,21 @@ const arr = [{
   users: ['kk', 'zz', 'xyz']
 }];
 
-const sortedById = shape(arr).sortBy({
-  key: 'id', // string, **REQUIRED**
-  type: 'number', // string, default = 'string'
-  direction = 'desc' // string, defaul = 'asc'
-}).fetch();
+const sortedById = shape(arr).sortBy('id', 'number', 'desc').fetch();
 
 // sortedById contains:
 // [{ id: 3 ... }, { id: 1 ... }, { id: 1 ... }]
 ```
 
-Available options for `sortBy` are:
+Params `type` and `direction` can be configured with the following options:
 
-- type
+- type: string
     - `number`
     - `string`
     - `date` - new Date() fields
     - `combo` - combination of two string fields
 
-- direction
+- direction: string
     - `asc`
     - `desc`
 
@@ -196,7 +192,7 @@ const users = shape(arr).reduceTo('users').fetch();
 // ["aa", "bb", "kk", "zz", "xyz", "ff", "hhh", "eeee", "kk"]
 ```
 
-You can also pass an optional `augmenter` function to `reduceTo` as a second argument. An augmenter is a special function, invoked only when you are reducing arrays of objects to another array of objects. It can be useful, when you want to extract a nested array of objects but also want to keep track of their parent objects after they have been reduced. Here's an example:
+You can also pass an optional `augmenter` function to `reduceTo` as a second argument. An augmenter is a special function, invoked only when you are reducing arrays of objects to another array of objects. It can be useful, when you want to extract a nested array of objects but also want to keep track of their parent object after they have been reduced. Here's an example:
 
 ```javascript
 const users = [{
@@ -216,11 +212,11 @@ const users = [{
 }, {
     id: 3,
     type: 'weekend_group',
-    grades: []
+    grades: {}
 }];
 
 const gradesWithUserId = shape(users)
-    .reduceTo('grades', ({ id }) => ({ id }))
+    .reduceTo('grades', ({ id }) => ({ id })) // reduce to grades and augment items with parent id
     .fetch();
 
 // gradesWithUserId contains
@@ -231,47 +227,12 @@ const gradesWithUserId = shape(users)
 ]
 ```
 
-The `augmenter` method returns an object, which is then merged into the respective reduced item. With an augmenter you can add identifiers to your morphed collections.
+The `augmenter` method must return an object, which is then merged into the respective reduced item. With an augmenter you can add identifiers to your morphed collections.
 
 The following params are passed to `augmenter`:
 - item - the parent item
-- prop - the currently reduced-to item
-- key - key passed to the `reduceTo` function
-
-## extractNestedProp
-A helper utility method for retrieving object properties at any level.
-
-```javascript
-import { extractNestedProp } from 'shape-collection';
-
-const users = [{
-    id: 1,
-    type: 'day_group',
-    grades: {
-        english: 4,
-        driving: 7
-    }
-}, {
-    id: 2,
-    type: 'evening_group',
-    grades: {
-        english: 6,
-        driving: 10
-    }
-}, {
-    id: 3,
-    type: 'weekend_group',
-    grades: []
-}];
-
-const [ firstUser ] = users;
-const englishGrade = extractNestedProp(firstUser, 'grades.english');
-
-// englishGrade contains
-// 4
-```
-
-`extractNestedProp` works on any level as long as the prop at the requested key is an object. For multiple keys like `grades.english` this means that grades must be an object. This methods returns `undefined` if no such key exists in the target object.
+- prop - the currently reduced-to property of the parent item
+- key - the key passed to `reduceTo` function
 
 ## Examples
 
@@ -464,6 +425,39 @@ const nestedItems = shape(nestedItems)
 [
     {id: 1111, type: "aaaa"},
     {id: 2222, type: "bbbb"}
+]
+*/
+
+const users = [{
+    id: 1,
+    name: 'User A',
+    grades: {
+        english: 4,
+        driving: 7
+    }
+}, {
+    id: 2,
+    name: 'User B',
+    grades: {
+        english: 6,
+        driving: 10
+    }
+}, {
+    id: 3,
+    name: 'User C',
+    grades: {}
+}];
+
+const usersSortedByEnglishScore = shape(testData.users)
+    .sortBy('grades.english', 'number', 'desc') // sort collection by nested property
+    .fetch();
+
+// usersSortedByEnglishScore contains
+/*
+[
+{ id: 2, grades: { english: 6 ... } },
+{ id: 2, grades: { english: 4 ... } },
+{ id: 2, grades: {} },
 ]
 */
 ```
